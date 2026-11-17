@@ -1,0 +1,110 @@
+# BI KPI coursework: sources, data warehouse, orchestration, ML registry and
+# dashboards. Ports are chosen not to clash with other local projects.
+#
+#   docker compose build
+#   docker compose up -d source-db dwh mlflow
+#   docker compose run --rm runner generate
+#   docker compose up -d source-api airflow dashboard
+#   docker compose run --rm runner all
+name: bi-kpi
+
+x-project: &project
+  image: bikpi:1.0
+  build:
+    context: .
+    dockerfile: docker/runner/Dockerfile
+  env_file: .env
+  # The entrypoint of the Airflow image passes every command to airflow.
+  entrypoint: []
+  volumes:
+    - ./:/opt/project
+
+services:
+  # Operational database of the agency (OLTP source, modelled on BC).
+  source-db:
+    image: postgres:16.4
+    environment:
+      POSTGRES_DB: bc_ops
+      POSTGRES_USER: bc
+      POSTGRES_PASSWORD: bc_pass
+    ports: ["55440:5432"]
+    volumes: [source-db:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bc -d bc_ops"]
+      interval: 5s
+      retries: 20
+
+  # Data warehouse: bronze, silver, gold, mart, ml, dq schemas.
+  dwh:
+    image: postgres:16.4
+    environment:
+      POSTGRES_DB: dwh
+      POSTGRES_USER: dwh
+      POSTGRES_PASSWORD: dwh_pass
+    ports: ["55441:5432"]
+    volumes:
+      - dwh:/var/lib/postgresql/data
+      - ./sql/00_init.sql:/docker-entrypoint-initdb.d/00_init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dwh -d dwh"]
+      interval: 5s
+      retries: 20
+
+  # REST API of the transport service (JSON source).
+  source-api:
+    <<: *project
+    command: ["/opt/bikpi/bin/python", "-m", "bikpi.sources.api_server"]
+    ports: ["8095:8000"]
+
+  # MLflow tracking server and model registry.
+  mlflow:
+    <<: *project
+    command: >
+      /opt/bikpi/bin/mlflow server --host 0.0.0.0 --port 5000
+      --backend-store-uri sqlite:////opt/mlflow/mlflow.db
+      --artifacts-destination /opt/mlflow/artifacts
+    ports: ["5050:5000"]
+    volumes:
+      - ./:/opt/project
+      - mlflow:/opt/mlflow
+
+  # Apache Airflow: the daily ETL + ML pipeline (DAG bc_kpi_pipeline).
+  airflow:
+    <<: *project
+    environment:
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/project/dags
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__WEBSERVER__SECRET_KEY: bikpi-coursework
+    command: >
+      bash -c "airflow db migrate &&
+      (airflow users create --username admin --password admin --firstname BI
+      --lastname Admin --role Admin --email admin@example.com || true) &&
+      (airflow scheduler &) && exec airflow webserver"
+    ports: ["8090:8080"]
+    volumes:
+      - ./:/opt/project
+      - airflow:/opt/airflow
+    depends_on: [dwh, source-db, mlflow, source-api]
+
+  # Python dashboard (Plotly Dash), the same KPIs as the Power BI report.
+  dashboard:
+    <<: *project
+    command: ["/opt/bikpi/bin/python", "dashboard/app.py"]
+    ports: ["8050:8050"]
+    # Waits for the first run of the pipeline to fill the marts.
+    restart: on-failure
+    depends_on: [dwh]
+
+  # One-off commands: docker compose run --rm runner all
+  runner:
+    <<: *project
+    entrypoint: ["/opt/bikpi/bin/python", "-m", "bikpi.cli"]
+    command: ["--help"]
+    profiles: ["tools"]
+
+volumes:
+  source-db:
+  dwh:
+  mlflow:
+  airflow:

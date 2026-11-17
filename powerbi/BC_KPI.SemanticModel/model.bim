@@ -1,0 +1,1054 @@
+{
+  "compatibilityLevel": 1567,
+  "model": {
+    "culture": "uk-UA",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "uk-UA",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "tables": [
+      {
+        "name": "Календар",
+        "columns": [
+          {
+            "name": "date_key",
+            "dataType": "int64",
+            "sourceColumn": "date_key",
+            "isHidden": true,
+            "summarizeBy": "none"
+          },
+          {
+            "name": "date",
+            "dataType": "dateTime",
+            "sourceColumn": "date",
+            "formatString": "dd.MM.yyyy",
+            "isKey": true
+          },
+          {
+            "name": "year",
+            "dataType": "int64",
+            "sourceColumn": "year",
+            "formatString": "0",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "quarter",
+            "dataType": "int64",
+            "sourceColumn": "quarter",
+            "formatString": "0",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "month",
+            "dataType": "int64",
+            "sourceColumn": "month",
+            "formatString": "0",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "month_name",
+            "dataType": "string",
+            "sourceColumn": "month_name",
+            "sortByColumn": "month"
+          },
+          {
+            "name": "month_start",
+            "dataType": "dateTime",
+            "sourceColumn": "month_start",
+            "formatString": "MMM yyyy"
+          },
+          {
+            "name": "iso_week",
+            "dataType": "int64",
+            "sourceColumn": "iso_week",
+            "formatString": "0",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "day_of_week",
+            "dataType": "int64",
+            "sourceColumn": "day_of_week",
+            "formatString": "0",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "day_name",
+            "dataType": "string",
+            "sourceColumn": "day_name"
+          },
+          {
+            "name": "is_weekend",
+            "dataType": "boolean",
+            "sourceColumn": "is_weekend"
+          },
+          {
+            "name": "is_holiday",
+            "dataType": "boolean",
+            "sourceColumn": "is_holiday"
+          },
+          {
+            "name": "holiday_name",
+            "dataType": "string",
+            "sourceColumn": "holiday_name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Календар",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = PostgreSQL.Database(Server, Database),\n    Data = Source{[Schema=\"gold\",Item=\"dim_date\"]}[Data]\nin\n    Data"
+            }
+          }
+        ],
+        "measures": [],
+        "dataCategory": "Time"
+      },
+      {
+        "name": "Об'єкти",
+        "columns": [
+          {
+            "name": "workplace_key",
+            "dataType": "int64",
+            "sourceColumn": "workplace_key",
+            "isHidden": true,
+            "summarizeBy": "none"
+          },
+          {
+            "name": "workplace_code",
+            "dataType": "string",
+            "sourceColumn": "workplace_code"
+          },
+          {
+            "name": "workplace_name",
+            "dataType": "string",
+            "sourceColumn": "workplace_name"
+          },
+          {
+            "name": "client_name",
+            "dataType": "string",
+            "sourceColumn": "client_name"
+          },
+          {
+            "name": "city",
+            "dataType": "string",
+            "sourceColumn": "city"
+          },
+          {
+            "name": "is_active",
+            "dataType": "boolean",
+            "sourceColumn": "is_active"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Об'єкти",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = PostgreSQL.Database(Server, Database),\n    Data = Source{[Schema=\"gold\",Item=\"dim_workplace\"]}[Data]\nin\n    Data"
+            }
+          }
+        ],
+        "measures": []
+      },
+      {
+        "name": "KPI день",
+        "columns": [
+          {
+            "name": "date",
+            "dataType": "dateTime",
+            "sourceColumn": "date",
+            "formatString": "dd.MM.yyyy"
+          },
+          {
+            "name": "workplace_code",
+            "dataType": "string",
+            "sourceColumn": "workplace_code"
+          },
+          {
+            "name": "is_future",
+            "dataType": "boolean",
+            "sourceColumn": "is_future",
+            "isHidden": true
+          },
+          {
+            "name": "headcount",
+            "dataType": "int64",
+            "sourceColumn": "headcount",
+            "formatString": "#,0"
+          },
+          {
+            "name": "planned_shifts",
+            "dataType": "int64",
+            "sourceColumn": "planned_shifts",
+            "formatString": "#,0"
+          },
+          {
+            "name": "worked_shifts",
+            "dataType": "int64",
+            "sourceColumn": "worked_shifts",
+            "formatString": "#,0"
+          },
+          {
+            "name": "planned_hours",
+            "dataType": "double",
+            "sourceColumn": "planned_hours",
+            "formatString": "#,0"
+          },
+          {
+            "name": "worked_hours",
+            "dataType": "double",
+            "sourceColumn": "worked_hours",
+            "formatString": "#,0"
+          },
+          {
+            "name": "overtime_hours",
+            "dataType": "double",
+            "sourceColumn": "overtime_hours",
+            "formatString": "#,0"
+          },
+          {
+            "name": "plan_fulfillment",
+            "dataType": "double",
+            "sourceColumn": "plan_fulfillment",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "attendance_rate",
+            "dataType": "double",
+            "sourceColumn": "attendance_rate",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "no_show_rate",
+            "dataType": "double",
+            "sourceColumn": "no_show_rate",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "sick_rate",
+            "dataType": "double",
+            "sourceColumn": "sick_rate",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "unrecorded_rate",
+            "dataType": "double",
+            "sourceColumn": "unrecorded_rate",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "overtime_share",
+            "dataType": "double",
+            "sourceColumn": "overtime_share",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "revenue_czk",
+            "dataType": "double",
+            "sourceColumn": "revenue_czk",
+            "formatString": "#,0"
+          },
+          {
+            "name": "labor_cost_czk",
+            "dataType": "double",
+            "sourceColumn": "labor_cost_czk",
+            "formatString": "#,0"
+          },
+          {
+            "name": "gross_margin_czk",
+            "dataType": "double",
+            "sourceColumn": "gross_margin_czk",
+            "formatString": "#,0"
+          },
+          {
+            "name": "trips",
+            "dataType": "int64",
+            "sourceColumn": "trips",
+            "formatString": "#,0"
+          },
+          {
+            "name": "trips_cancelled",
+            "dataType": "int64",
+            "sourceColumn": "trips_cancelled",
+            "formatString": "#,0"
+          },
+          {
+            "name": "on_time_rate",
+            "dataType": "double",
+            "sourceColumn": "on_time_rate",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "avg_delay_min",
+            "dataType": "double",
+            "sourceColumn": "avg_delay_min",
+            "formatString": "#,0.0"
+          },
+          {
+            "name": "seat_occupancy",
+            "dataType": "double",
+            "sourceColumn": "seat_occupancy",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "boarding_rate",
+            "dataType": "double",
+            "sourceColumn": "boarding_rate",
+            "formatString": "0.0%"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "KPI день",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = PostgreSQL.Database(Server, Database),\n    Data = Source{[Schema=\"mart\",Item=\"kpi_workplace_day\"]}[Data]\nin\n    Data"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Години план",
+            "expression": "CALCULATE(SUM('KPI день'[planned_hours]), 'KPI день'[is_future] = FALSE())",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Години факт",
+            "expression": "SUM('KPI день'[worked_hours])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Виконання плану",
+            "expression": "DIVIDE([Години факт], [Години план])",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Заплановані зміни",
+            "expression": "CALCULATE(SUM('KPI день'[planned_shifts]), 'KPI день'[is_future] = FALSE())",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Невиходи",
+            "expression": "DIVIDE(SUMX('KPI день', 'KPI день'[no_show_rate] * 'KPI день'[planned_shifts]), [Заплановані зміни])",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Лікарняні",
+            "expression": "DIVIDE(SUMX('KPI день', 'KPI день'[sick_rate] * 'KPI день'[planned_shifts]), [Заплановані зміни])",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Понаднормові",
+            "expression": "DIVIDE(SUM('KPI день'[overtime_hours]), [Години факт])",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Середня чисельність",
+            "expression": "AVERAGEX(VALUES('Календар'[date]), CALCULATE(SUM('KPI день'[headcount])))",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Виручка",
+            "expression": "SUM('KPI день'[revenue_czk])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Витрати на персонал",
+            "expression": "SUM('KPI день'[labor_cost_czk])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Валова маржа",
+            "expression": "[Виручка] - [Витрати на персонал]",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Маржа %",
+            "expression": "DIVIDE([Валова маржа], [Виручка])",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Маржа % мин. рік",
+            "expression": "CALCULATE([Маржа %], SAMEPERIODLASTYEAR('Календар'[date]))",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Виручка зміна р/р",
+            "expression": "VAR ly = CALCULATE([Виручка], SAMEPERIODLASTYEAR('Календар'[date])) RETURN DIVIDE([Виручка] - ly, ly)",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Рейси",
+            "expression": "SUM('KPI день'[trips])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Скасовані рейси",
+            "expression": "SUM('KPI день'[trips_cancelled])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Рейси вчасно",
+            "expression": "DIVIDE(SUMX('KPI день', 'KPI день'[on_time_rate] * ('KPI день'[trips] - 'KPI день'[trips_cancelled])), SUMX(FILTER('KPI день', NOT ISBLANK('KPI день'[on_time_rate])), 'KPI день'[trips] - 'KPI день'[trips_cancelled]))",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Середня затримка, хв",
+            "expression": "DIVIDE(SUMX('KPI день', 'KPI день'[avg_delay_min] * ('KPI день'[trips] - 'KPI день'[trips_cancelled])), SUMX(FILTER('KPI день', NOT ISBLANK('KPI день'[avg_delay_min])), 'KPI день'[trips] - 'KPI день'[trips_cancelled]))",
+            "formatString": "#,0.0"
+          },
+          {
+            "name": "Заповненість автобусів",
+            "expression": "AVERAGE('KPI день'[seat_occupancy])",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Факт за 120 днів",
+            "expression": "VAR lastDay = CALCULATE(MAX('KPI день'[date]), ALL('KPI день'), 'KPI день'[is_future] = FALSE()) VAR d = MAX('Календар'[date]) RETURN IF(d > lastDay - 120 && d <= lastDay, [Години факт])",
+            "formatString": "#,0"
+          }
+        ]
+      },
+      {
+        "name": "KPI місяць",
+        "columns": [
+          {
+            "name": "month",
+            "dataType": "dateTime",
+            "sourceColumn": "month",
+            "formatString": "MMM yyyy"
+          },
+          {
+            "name": "workplace_code",
+            "dataType": "string",
+            "sourceColumn": "workplace_code"
+          },
+          {
+            "name": "avg_headcount",
+            "dataType": "double",
+            "sourceColumn": "avg_headcount",
+            "formatString": "#,0"
+          },
+          {
+            "name": "hires",
+            "dataType": "int64",
+            "sourceColumn": "hires",
+            "formatString": "#,0"
+          },
+          {
+            "name": "leavers",
+            "dataType": "int64",
+            "sourceColumn": "leavers",
+            "formatString": "#,0"
+          },
+          {
+            "name": "turnover_rate",
+            "dataType": "double",
+            "sourceColumn": "turnover_rate",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "planned_hours",
+            "dataType": "double",
+            "sourceColumn": "planned_hours",
+            "formatString": "#,0"
+          },
+          {
+            "name": "worked_hours",
+            "dataType": "double",
+            "sourceColumn": "worked_hours",
+            "formatString": "#,0"
+          },
+          {
+            "name": "overtime_hours",
+            "dataType": "double",
+            "sourceColumn": "overtime_hours",
+            "formatString": "#,0"
+          },
+          {
+            "name": "plan_fulfillment",
+            "dataType": "double",
+            "sourceColumn": "plan_fulfillment",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "no_show_rate",
+            "dataType": "double",
+            "sourceColumn": "no_show_rate",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "sick_rate",
+            "dataType": "double",
+            "sourceColumn": "sick_rate",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "revenue_czk",
+            "dataType": "double",
+            "sourceColumn": "revenue_czk",
+            "formatString": "#,0"
+          },
+          {
+            "name": "labor_cost_czk",
+            "dataType": "double",
+            "sourceColumn": "labor_cost_czk",
+            "formatString": "#,0"
+          },
+          {
+            "name": "gross_margin_czk",
+            "dataType": "double",
+            "sourceColumn": "gross_margin_czk",
+            "formatString": "#,0"
+          },
+          {
+            "name": "margin_rate",
+            "dataType": "double",
+            "sourceColumn": "margin_rate",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "invoiced_czk",
+            "dataType": "double",
+            "sourceColumn": "invoiced_czk",
+            "formatString": "#,0"
+          },
+          {
+            "name": "invoice_gap_rate",
+            "dataType": "double",
+            "sourceColumn": "invoice_gap_rate",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "on_time_rate",
+            "dataType": "double",
+            "sourceColumn": "on_time_rate",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "avg_delay_min",
+            "dataType": "double",
+            "sourceColumn": "avg_delay_min",
+            "formatString": "#,0.0"
+          },
+          {
+            "name": "seat_occupancy",
+            "dataType": "double",
+            "sourceColumn": "seat_occupancy",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "requests",
+            "dataType": "int64",
+            "sourceColumn": "requests",
+            "formatString": "#,0"
+          },
+          {
+            "name": "median_decision_hours",
+            "dataType": "double",
+            "sourceColumn": "median_decision_hours",
+            "formatString": "#,0.0"
+          },
+          {
+            "name": "advances_czk",
+            "dataType": "double",
+            "sourceColumn": "advances_czk",
+            "formatString": "#,0"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "KPI місяць",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = PostgreSQL.Database(Server, Database),\n    Data = Source{[Schema=\"mart\",Item=\"kpi_workplace_month\"]}[Data]\nin\n    Data"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Прийнято",
+            "expression": "SUM('KPI місяць'[hires])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Звільнилось",
+            "expression": "SUM('KPI місяць'[leavers])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Плинність за місяць",
+            "expression": "DIVIDE([Звільнилось], SUM('KPI місяць'[avg_headcount]))",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Виставлено рахунків",
+            "expression": "SUM('KPI місяць'[invoiced_czk])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Розбіжність з рахунками",
+            "expression": "VAR billed = FILTER('KPI місяць', NOT ISBLANK('KPI місяць'[invoiced_czk])) RETURN DIVIDE(SUMX(billed, 'KPI місяць'[invoiced_czk]) - SUMX(billed, 'KPI місяць'[revenue_czk]), SUMX(billed, 'KPI місяць'[revenue_czk]))",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Медіана рішення, год",
+            "expression": "AVERAGE('KPI місяць'[median_decision_hours])",
+            "formatString": "#,0.0"
+          }
+        ]
+      },
+      {
+        "name": "Прогноз",
+        "columns": [
+          {
+            "name": "run_id",
+            "dataType": "string",
+            "sourceColumn": "run_id",
+            "isHidden": true
+          },
+          {
+            "name": "model_name",
+            "dataType": "string",
+            "sourceColumn": "model_name"
+          },
+          {
+            "name": "model_version",
+            "dataType": "string",
+            "sourceColumn": "model_version"
+          },
+          {
+            "name": "workplace_code",
+            "dataType": "string",
+            "sourceColumn": "workplace_code"
+          },
+          {
+            "name": "date",
+            "dataType": "dateTime",
+            "sourceColumn": "date",
+            "formatString": "dd.MM.yyyy"
+          },
+          {
+            "name": "planned_hours",
+            "dataType": "double",
+            "sourceColumn": "planned_hours",
+            "formatString": "#,0"
+          },
+          {
+            "name": "predicted_hours",
+            "dataType": "double",
+            "sourceColumn": "predicted_hours",
+            "formatString": "#,0"
+          },
+          {
+            "name": "lower_hours",
+            "dataType": "double",
+            "sourceColumn": "lower_hours",
+            "formatString": "#,0"
+          },
+          {
+            "name": "upper_hours",
+            "dataType": "double",
+            "sourceColumn": "upper_hours",
+            "formatString": "#,0"
+          },
+          {
+            "name": "created_at",
+            "dataType": "dateTime",
+            "sourceColumn": "created_at",
+            "formatString": "dd.MM.yyyy HH:mm",
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Прогноз",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = PostgreSQL.Database(Server, Database),\n    Data = Source{[Schema=\"ml\",Item=\"forecast\"]}[Data]\nin\n    Data"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Прогноз годин",
+            "expression": "SUM('Прогноз'[predicted_hours])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Прогноз мін",
+            "expression": "SUM('Прогноз'[lower_hours])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Прогноз макс",
+            "expression": "SUM('Прогноз'[upper_hours])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "План на прогноз",
+            "expression": "SUM('Прогноз'[planned_hours])",
+            "formatString": "#,0"
+          }
+        ]
+      },
+      {
+        "name": "Відхилення",
+        "columns": [
+          {
+            "name": "workplace_code",
+            "dataType": "string",
+            "sourceColumn": "workplace_code"
+          },
+          {
+            "name": "date",
+            "dataType": "dateTime",
+            "sourceColumn": "date",
+            "formatString": "dd.MM.yyyy"
+          },
+          {
+            "name": "kpi",
+            "dataType": "string",
+            "sourceColumn": "kpi"
+          },
+          {
+            "name": "value",
+            "dataType": "double",
+            "sourceColumn": "value",
+            "formatString": "0.000"
+          },
+          {
+            "name": "expected",
+            "dataType": "double",
+            "sourceColumn": "expected",
+            "formatString": "0.000"
+          },
+          {
+            "name": "robust_z",
+            "dataType": "double",
+            "sourceColumn": "robust_z",
+            "formatString": "0.0"
+          },
+          {
+            "name": "iforest_score",
+            "dataType": "double",
+            "sourceColumn": "iforest_score",
+            "formatString": "0.000"
+          },
+          {
+            "name": "method",
+            "dataType": "string",
+            "sourceColumn": "method"
+          },
+          {
+            "name": "severity",
+            "dataType": "string",
+            "sourceColumn": "severity"
+          },
+          {
+            "name": "detected_at",
+            "dataType": "dateTime",
+            "sourceColumn": "detected_at",
+            "formatString": "dd.MM.yyyy HH:mm",
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Відхилення",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = PostgreSQL.Database(Server, Database),\n    Data = Source{[Schema=\"ml\",Item=\"anomalies\"]}[Data]\nin\n    Data"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Кількість відхилень",
+            "expression": "COUNTROWS('Відхилення')",
+            "formatString": "0"
+          }
+        ]
+      },
+      {
+        "name": "Якість виявлення",
+        "columns": [
+          {
+            "name": "run_id",
+            "dataType": "string",
+            "sourceColumn": "run_id",
+            "isHidden": true
+          },
+          {
+            "name": "period",
+            "dataType": "string",
+            "sourceColumn": "period"
+          },
+          {
+            "name": "method",
+            "dataType": "string",
+            "sourceColumn": "method"
+          },
+          {
+            "name": "threshold",
+            "dataType": "double",
+            "sourceColumn": "threshold",
+            "formatString": "0.0"
+          },
+          {
+            "name": "true_positives",
+            "dataType": "int64",
+            "sourceColumn": "true_positives",
+            "formatString": "0"
+          },
+          {
+            "name": "false_positives",
+            "dataType": "int64",
+            "sourceColumn": "false_positives",
+            "formatString": "0"
+          },
+          {
+            "name": "false_negatives",
+            "dataType": "int64",
+            "sourceColumn": "false_negatives",
+            "formatString": "0"
+          },
+          {
+            "name": "precision",
+            "dataType": "double",
+            "sourceColumn": "precision",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "recall",
+            "dataType": "double",
+            "sourceColumn": "recall",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "f1",
+            "dataType": "double",
+            "sourceColumn": "f1",
+            "formatString": "0.000"
+          },
+          {
+            "name": "created_at",
+            "dataType": "dateTime",
+            "sourceColumn": "created_at",
+            "formatString": "dd.MM.yyyy HH:mm",
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Якість виявлення",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = PostgreSQL.Database(Server, Database),\n    Data = Source{[Schema=\"ml\",Item=\"anomaly_evaluation\"]}[Data]\nin\n    Data"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "F1 (тест)",
+            "expression": "CALCULATE(MAX('Якість виявлення'[f1]), 'Якість виявлення'[period] = \"test\")",
+            "formatString": "0.000"
+          },
+          {
+            "name": "Precision (тест)",
+            "expression": "CALCULATE(MAX('Якість виявлення'[precision]), 'Якість виявлення'[period] = \"test\")",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Recall (тест)",
+            "expression": "CALCULATE(MAX('Якість виявлення'[recall]), 'Якість виявлення'[period] = \"test\")",
+            "formatString": "0.0%"
+          }
+        ]
+      },
+      {
+        "name": "Бектест",
+        "columns": [
+          {
+            "name": "run_id",
+            "dataType": "string",
+            "sourceColumn": "run_id",
+            "isHidden": true
+          },
+          {
+            "name": "model",
+            "dataType": "string",
+            "sourceColumn": "model"
+          },
+          {
+            "name": "fold",
+            "dataType": "int64",
+            "sourceColumn": "fold",
+            "formatString": "0",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "cutoff",
+            "dataType": "dateTime",
+            "sourceColumn": "cutoff",
+            "formatString": "dd.MM.yyyy"
+          },
+          {
+            "name": "mae",
+            "dataType": "double",
+            "sourceColumn": "mae",
+            "formatString": "#,0.0"
+          },
+          {
+            "name": "rmse",
+            "dataType": "double",
+            "sourceColumn": "rmse",
+            "formatString": "#,0.0"
+          },
+          {
+            "name": "mape",
+            "dataType": "double",
+            "sourceColumn": "mape",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "wape",
+            "dataType": "double",
+            "sourceColumn": "wape",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "created_at",
+            "dataType": "dateTime",
+            "sourceColumn": "created_at",
+            "formatString": "dd.MM.yyyy HH:mm",
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Бектест",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = PostgreSQL.Database(Server, Database),\n    Data = Source{[Schema=\"ml\",Item=\"backtest\"]}[Data]\nin\n    Data"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "WAPE середня",
+            "expression": "AVERAGE('Бектест'[wape])",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "WAPE бустинг",
+            "expression": "CALCULATE([WAPE середня], 'Бектест'[model] = \"gradient_boosting\")",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "WAPE наївний",
+            "expression": "CALCULATE([WAPE середня], 'Бектест'[model] = \"seasonal_naive\")",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "MAPE середня",
+            "expression": "AVERAGE('Бектест'[mape])",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "MAE, год",
+            "expression": "AVERAGE('Бектест'[mae])",
+            "formatString": "#,0.0"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "03edc9b4-317c-5df9-8474-febf94b0f0e1",
+        "fromTable": "KPI день",
+        "fromColumn": "date",
+        "toTable": "Календар",
+        "toColumn": "date"
+      },
+      {
+        "name": "cbe00ee3-528d-59cb-ae17-08535e25afd5",
+        "fromTable": "KPI день",
+        "fromColumn": "workplace_code",
+        "toTable": "Об'єкти",
+        "toColumn": "workplace_code"
+      },
+      {
+        "name": "9d613c9f-cd1b-570b-adae-e43bf8e9408d",
+        "fromTable": "KPI місяць",
+        "fromColumn": "month",
+        "toTable": "Календар",
+        "toColumn": "date"
+      },
+      {
+        "name": "fd320dca-113f-5902-b02f-435300ebc62c",
+        "fromTable": "KPI місяць",
+        "fromColumn": "workplace_code",
+        "toTable": "Об'єкти",
+        "toColumn": "workplace_code"
+      },
+      {
+        "name": "7ecd22a4-b0df-560f-83a6-eca173ac9a67",
+        "fromTable": "Прогноз",
+        "fromColumn": "date",
+        "toTable": "Календар",
+        "toColumn": "date"
+      },
+      {
+        "name": "c5b50501-03a2-5ea1-bc8b-b24e4e148939",
+        "fromTable": "Прогноз",
+        "fromColumn": "workplace_code",
+        "toTable": "Об'єкти",
+        "toColumn": "workplace_code"
+      },
+      {
+        "name": "ca649548-c775-55cb-8dc7-3a9a7f6f3a4f",
+        "fromTable": "Відхилення",
+        "fromColumn": "date",
+        "toTable": "Календар",
+        "toColumn": "date"
+      },
+      {
+        "name": "686ad7a6-64a5-51e2-8f16-30914de48476",
+        "fromTable": "Відхилення",
+        "fromColumn": "workplace_code",
+        "toTable": "Об'єкти",
+        "toColumn": "workplace_code"
+      }
+    ],
+    "expressions": [
+      {
+        "name": "Server",
+        "kind": "m",
+        "expression": "\"localhost:55441\" meta [IsParameterQuery=true, Type=\"Text\", IsParameterQueryRequired=true]"
+      },
+      {
+        "name": "Database",
+        "kind": "m",
+        "expression": "\"dwh\" meta [IsParameterQuery=true, Type=\"Text\", IsParameterQueryRequired=true]"
+      }
+    ],
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"Server\", \"Database\", \"\\u041a\\u0430\\u043b\\u0435\\u043d\\u0434\\u0430\\u0440\", \"\\u041e\\u0431'\\u0454\\u043a\\u0442\\u0438\", \"KPI \\u0434\\u0435\\u043d\\u044c\", \"KPI \\u043c\\u0456\\u0441\\u044f\\u0446\\u044c\", \"\\u041f\\u0440\\u043e\\u0433\\u043d\\u043e\\u0437\", \"\\u0412\\u0456\\u0434\\u0445\\u0438\\u043b\\u0435\\u043d\\u043d\\u044f\", \"\\u042f\\u043a\\u0456\\u0441\\u0442\\u044c \\u0432\\u0438\\u044f\\u0432\\u043b\\u0435\\u043d\\u043d\\u044f\", \"\\u0411\\u0435\\u043a\\u0442\\u0435\\u0441\\u0442\"]"
+      }
+    ]
+  }
+}

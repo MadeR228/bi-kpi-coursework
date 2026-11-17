@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+data/raw/
+data/export/
+data/ground_truth/
+mlruns/
+*.pbix.bak
+powerbi/**/.pbi/localSettings.json
+powerbi/**/.pbi/cache.abf
+docs/build/node_modules/

@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "datasetReference": {
+    "byPath": {
+      "path": "../BC_KPI.SemanticModel"
+    },
+    "byConnection": null
+  }
+}
